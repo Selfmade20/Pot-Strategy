@@ -24,14 +24,32 @@ const Home = () => {
   ];
 
   return (
-    <section className="bg-[oklch(98.41%_0.006_293.63)] py-0">
+    <section className="bg-[oklch(98.41%_0.006_293.63)] ">
       <div className="container mx-auto px-4 sm:px-8 max-w-screen-xl">
-        <h2 className="mt-20 mb-6 text-4xl sm:text-6xl lg:text-7xl font-extrabold text-center text-purple-500">
+        <h2 className="mt-10 mb-6 text-4xl sm:text-6xl lg:text-7xl font-extrabold text-center text-purple-500">
           Shorten Your URLs
         </h2>
         <p className="mx-auto mb-12 text-center text-gray-400 text-lg sm:text-xl max-w-2xl">
-          Transform long, unwieldy URLs into short, shareable links that are perfect for social media, emails, and anywhere you need clean, professional links.
+          Transform long, unwieldy URLs into short, shareable links that are
+          perfect for social media, emails, and anywhere you need clean,
+          professional links.
         </p>
+      </div>
+
+      <div className="container mx-auto px-4 sm:px-8 max-w-screen-xl flex justify-center mb-16">
+        <form className="flex flex-col sm:flex-row w-full max-w-2xl bg-white rounded-2xl shadow-md p-4 items-stretch sm:items-center gap-4" onSubmit={e => e.preventDefault()}>
+          <input
+            type="text"
+            placeholder="Enter your long URL here..."
+            className="w-full sm:flex-grow px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400 text-lg text-gray-700 bg-gray-50"
+          />
+          <button
+            type="submit"
+            className="w-full sm:w-auto px-8 py-3 min-w-[160px] rounded-full bg-gradient-to-tr from-purple-500 to-purple-400 text-white font-semibold text-lg shadow hover:from-purple-600 hover:to-purple-500 transition-colors text-center"
+          >
+            Shorten
+          </button>
+        </form>
       </div>
 
       <div className="container mx-auto px-4 sm:px-8 max-w-screen-xl">
