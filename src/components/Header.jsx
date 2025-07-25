@@ -18,7 +18,7 @@ const Header = () => {
   return (
     <nav className="py-2 px-4 sm:px-8 lg:px-16 flex justify-between items-center w-full">
       <Link to="/">
-        <img src="/logo.png" className="h-14 sm:h-20 lg:h-24 ml-0 sm:ml-2 lg:ml-4" alt="ShortLink logo" />
+        <img src="/logo.png" className="h-14 sm:h-20 lg:h-24 ml-0 sm:ml-2 lg:ml-4 outline-none" alt="ShortLink logo" />
       </Link>
 
       <div>
