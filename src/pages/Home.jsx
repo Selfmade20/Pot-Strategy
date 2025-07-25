@@ -1,7 +1,19 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { BarChart2, Zap, ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const [longUrl, setLongUrl] = useState();
+  const navigate = useNavigate();
+
+  const handleShorten = (e) => {
+    e.preventDefault();
+    if (longUrl) navigate(`/auth?createNew=${longUrl}`);
+  };
+
   const features = [
     {
       icon: <Zap className="w-8 h-8 text-white" />,
@@ -37,18 +49,23 @@ const Home = () => {
       </div>
 
       <div className="container mx-auto px-4 sm:px-8 max-w-screen-xl flex justify-center mb-16">
-        <form className="flex flex-col sm:flex-row w-full max-w-2xl bg-white rounded-2xl shadow-md p-4 items-stretch sm:items-center gap-4" onSubmit={e => e.preventDefault()}>
-          <input
-            type="text"
+        <form
+          onSubmit={handleShorten}
+          className="flex flex-col sm:flex-row w-full max-w-2xl bg-white rounded-2xl shadow-md p-4 items-stretch sm:items-center gap-4"
+        >
+          <Input
+            type="url"
+            value={longUrl}
             placeholder="Enter your long URL here..."
-            className="w-full sm:flex-grow px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-400 text-lg text-gray-700 bg-gray-50"
+            onChange={(e) => setLongUrl(e.target.value)}
+            className="w-full sm:flex-grow px-4 py-3 rounded-xl border border-purple-200 bg-purple-50 focus:outline-none focus:border-purple-200 text-lg text-gray-700"
           />
-          <button
+          <Button
             type="submit"
             className="w-full sm:w-auto px-8 py-3 min-w-[160px] rounded-full bg-gradient-to-tr from-purple-500 to-purple-400 text-white font-semibold text-lg shadow hover:from-purple-600 hover:to-purple-500 transition-colors text-center"
           >
             Shorten
-          </button>
+          </Button>
         </form>
       </div>
 
