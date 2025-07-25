@@ -1,9 +1,58 @@
-import React from 'react'
+import { Card, CardContent } from "@/components/ui/card";
+import { BarChart2, Zap, ShieldCheck } from "lucide-react";
 
-function Home() {
+const Home = () => {
+  const features = [
+    {
+      icon: <Zap className="w-8 h-8 text-white" />,
+      title: "Lightning Fast",
+      description:
+        "Generate short URLs instantly with our optimized infrastructure.",
+    },
+    {
+      icon: <BarChart2 className="w-8 h-8 text-white" />,
+      title: "Detailed Analytics",
+      description:
+        "Track clicks, locations, and engagement with comprehensive analytics.",
+    },
+    {
+      icon: <ShieldCheck className="w-8 h-8 text-white" />,
+      title: "Always Reliable",
+      description:
+        "99.9% uptime guarantee ensures your links work when you need them.",
+    },
+  ];
+
   return (
-    <div>Home</div>
-  )
-}
+    <section className="bg-[oklch(98.41%_0.006_293.63)] py-0">
+      <div className="container mx-auto px-4 sm:px-8 max-w-screen-xl">
+        <h2 className="mt-20 mb-6 text-4xl sm:text-6xl lg:text-7xl font-extrabold text-center text-purple-500">
+          Shorten Your URLs
+        </h2>
+        <p className="mx-auto mb-12 text-center text-gray-400 text-lg sm:text-xl max-w-2xl">
+          Transform long, unwieldy URLs into short, shareable links that are perfect for social media, emails, and anywhere you need clean, professional links.
+        </p>
+      </div>
 
-export default Home
+      <div className="container mx-auto px-4 sm:px-8 max-w-screen-xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {features.map((feature, i) => (
+            <Card key={i} className="text-center shadow-md rounded-xl">
+              <CardContent className="flex flex-col items-center py-10 px-6 space-y-4">
+                <div className="bg-gradient-to-tr from-purple-500 to-purple-400 p-4 rounded-full">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 text-sm">{feature.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default Home;
