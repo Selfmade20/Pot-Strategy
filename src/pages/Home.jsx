@@ -58,7 +58,7 @@ const Home = () => {
             value={longUrl}
             placeholder="Enter your long URL here..."
             onChange={(e) => setLongUrl(e.target.value)}
-            className="w-full sm:flex-grow px-4 py-3 rounded-xl border border-purple-200 bg-purple-50 focus:outline-none focus:border-purple-200 text-lg text-gray-700"
+            className="w-full sm:flex-grow px-4 py-3 rounded-xl border border-purple-200 bg-purple-50 text-lg text-gray-700"
           />
           <Button
             type="submit"
