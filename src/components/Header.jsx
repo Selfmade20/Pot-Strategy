@@ -13,7 +13,7 @@ import { LinkIcon, LogOut } from "lucide-react";
 
 const Header = () => {
   const navigate = useNavigate();
-  const user = true;
+  const user = false;
 
   return (
     <nav className="py-1 flex justify-between items-center">
@@ -25,7 +25,7 @@ const Header = () => {
         {!user ? (
           <Button
             onClick={() => navigate("/auth")}
-            className="bg-[#8C7BFD] hover:bg-[#A99CFF] text-white"
+            className="bg-gradient-to-tr from-purple-500 to-purple-400 hover:bg-[#A99CFF] text-white"
           >
             Login
           </Button>
