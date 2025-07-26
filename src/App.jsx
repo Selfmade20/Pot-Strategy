@@ -7,6 +7,8 @@ import Link from "./pages/Link";
 import Redirect from "./pages/Redirect";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import UrlProvider from "./context";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
 
 const router = createBrowserRouter([
   {
@@ -18,15 +20,27 @@ const router = createBrowserRouter([
       },
       {
         path: "/auth",
-        element: <Auth />,
+        element: (
+          <PublicRoute>
+            <Auth />
+          </PublicRoute>
+        ),
       },
       {
         path: "/dashboard",
-        element: <Dasboard />,
+        element: (
+          <ProtectedRoute>
+            <Dasboard />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/link/:id",
-        element: <Link />,
+        element: (
+          <ProtectedRoute>
+            <Link />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/:id",
