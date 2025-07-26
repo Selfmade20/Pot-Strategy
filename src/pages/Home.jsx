@@ -4,14 +4,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { UrlState } from "../context";
 
 const Home = () => {
   const [longUrl, setLongUrl] = useState();
   const navigate = useNavigate();
+  const { isAuthenticated } = UrlState();
 
-  const handleShorten = (e) => {
+  const handleShorten = async (e) => {
     e.preventDefault();
-    if (longUrl) navigate(`/auth?createNew=${longUrl}`);
+    if (!longUrl) return;
+
+    if (isAuthenticated) {
+      // User is logged in, redirect to dashboard with the URL
+      navigate(`/dashboard?createNew=${encodeURIComponent(longUrl)}`);
+    } else {
+      // User is not logged in, redirect to auth page
+      navigate(`/auth?createNew=${encodeURIComponent(longUrl)}`);
+    }
   };
 
   const features = [
