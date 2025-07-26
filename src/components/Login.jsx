@@ -14,7 +14,7 @@ import { useState } from "react";
 import * as Yup from "yup";
 import useFetch from "@/hooks/useFetch";
 import { login } from "@/db/apiAuth";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { UrlState } from "../context";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -28,6 +28,7 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
   let [searchParams] = useSearchParams();
   const longLink = searchParams.get("createNew");
 
@@ -65,7 +66,10 @@ const Login = () => {
       const result = await login(formData.email, formData.password);
       if (result) {
         fetchUser();
-        navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
+        // Redirect to the intended destination or dashboard
+        const from = location.state?.from?.pathname || "/dashboard";
+        const redirectUrl = longLink ? `${from}?createNew=${longLink}` : from;
+        navigate(redirectUrl);
       }
     } catch (e) {
       console.log("Login error:", e);
