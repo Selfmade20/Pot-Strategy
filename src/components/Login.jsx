@@ -10,7 +10,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { BeatLoader } from "react-spinners";
 import Error from "./Error";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import * as Yup from "yup";
 import useFetch from "@/hooks/useFetch";
 import { login } from "@/db/apiAuth";
@@ -42,13 +42,6 @@ const Login = () => {
   const { data, loading, error, fetchData } = useFetch(login);
   const { fetchUser } = UrlState();
 
-  useEffect(() => {
-    if (error === null && data) {
-      navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
-      fetchUser();
-    }
-  }, [data, error]);
-
   const handleLogin = async () => {
     setErrors([]);
     console.log("Form data being submitted:", formData);
@@ -67,15 +60,26 @@ const Login = () => {
         formData.email,
         formData.password
       );
-      await fetchData(formData.email, formData.password);
+      
+      // Call the login function directly instead of using useFetch
+      const result = await login(formData.email, formData.password);
+      if (result) {
+        fetchUser();
+        navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
+      }
     } catch (e) {
-      const newErrors = {};
-
-      e?.inner?.forEach((error) => {
-        newErrors[error.path] = error.message;
-      });
-
-      setErrors(newErrors);
+      console.log("Login error:", e);
+      if (e?.inner) {
+        // Validation error
+        const newErrors = {};
+        e.inner.forEach((error) => {
+          newErrors[error.path] = error.message;
+        });
+        setErrors(newErrors);
+      } else {
+        // API error
+        setErrors({ general: e.message });
+      }
     }
   };
 
@@ -84,7 +88,7 @@ const Login = () => {
       <CardHeader>
         <CardTitle>Login</CardTitle>
         <CardDescription>to your account if you have one</CardDescription>
-        {error && <Error message={error.message} />}
+        {errors.general && <Error message={errors.general} />}
       </CardHeader>
       <CardContent className="space-y-2">
         <div className="space-y-1">
