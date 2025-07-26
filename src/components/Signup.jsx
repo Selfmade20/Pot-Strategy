@@ -10,17 +10,19 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { BeatLoader } from "react-spinners";
 import Error from "./Error";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import * as Yup from "yup";
 import useFetch from "@/hooks/useFetch";
 import { signup } from "@/db/apiAuth";
 import { UrlState } from "../context";
 import { Eye, EyeOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [errors, setErrors] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -39,16 +41,6 @@ const Signup = () => {
   const { data, loading, error, fetchData } = useFetch(signup);
   const { fetchUser } = UrlState() || { fetchUser: () => {} };
 
-  useEffect(() => {
-    if (data !== null || error !== null) {
-      console.log("Signup response:", data);
-      console.log("Signup error:", error);
-    }
-    if (error === null && data) {
-      fetchUser(); // Refresh user state
-    }
-  }, [data, error, fetchUser]);
-
   const handleSignup = async () => {
     setErrors([]);
     console.log("Form data being submitted:", formData);
@@ -66,19 +58,30 @@ const Signup = () => {
       });
       await schema.validateSync(formData, { abortEarly: false });
       console.log(
-        "Validation passed, calling fetchData with:",
+        "Validation passed, calling signup with:",
         formData.email,
         formData.password
       );
-      await fetchData(formData.email, formData.password);
+      
+      // Call the signup function directly instead of using useFetch
+      const result = await signup(formData.email, formData.password);
+      if (result) {
+        fetchUser(); // Refresh user state
+        navigate("/dashboard");
+      }
     } catch (e) {
-      const newErrors = {};
-
-      e?.inner?.forEach((error) => {
-        newErrors[error.path] = error.message;
-      });
-
-      setErrors(newErrors);
+      console.log("Signup error:", e);
+      if (e?.inner) {
+        // Validation error
+        const newErrors = {};
+        e.inner.forEach((error) => {
+          newErrors[error.path] = error.message;
+        });
+        setErrors(newErrors);
+      } else {
+        // API error
+        setErrors({ general: e.message });
+      }
     }
   };
 
@@ -87,7 +90,7 @@ const Signup = () => {
       <CardHeader>
         <CardTitle>Signup</CardTitle>
         <CardDescription>Create a new account</CardDescription>
-        {error && <Error message={error.message} />}
+        {errors.general && <Error message={errors.general} />}
       </CardHeader>
       <CardContent className="space-y-2">
         <div className="space-y-1">
