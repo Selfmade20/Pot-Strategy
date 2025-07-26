@@ -16,13 +16,14 @@ import useFetch from "@/hooks/useFetch";
 import { signup } from "@/db/apiAuth";
 import { UrlState } from "../context";
 import { Eye, EyeOff } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Signup = () => {
   const [errors, setErrors] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -67,7 +68,9 @@ const Signup = () => {
       const result = await signup(formData.email, formData.password);
       if (result) {
         fetchUser(); // Refresh user state
-        navigate("/dashboard");
+        // Redirect to the intended destination or dashboard
+        const from = location.state?.from?.pathname || "/dashboard";
+        navigate(from);
       }
     } catch (e) {
       console.log("Signup error:", e);
