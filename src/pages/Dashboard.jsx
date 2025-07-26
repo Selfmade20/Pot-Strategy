@@ -1,8 +1,10 @@
 import { UrlState } from "../context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
-import { Link, TrendingUp, Star, BarChart3, Home, Plus } from "lucide-react";
+import { Link, TrendingUp, Star, BarChart3, Home, Plus, ExternalLink, Copy, Trash2 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useRealtimeLinks } from "../hooks/useRealtimeLinks";
+import { deleteLink } from "../db/apiLinks";
 
 const Dashboard = () => {
   const { user, loading } = UrlState();
@@ -10,20 +12,39 @@ const Dashboard = () => {
   const [searchParams] = useSearchParams();
   const createNewUrl = searchParams.get("createNew");
 
-  // Mock data - replace with real data from your API
-  const dashboardData = {
-    totalLinks: 4,
-    totalClicks: 4638,
-    averageClicks: 1160,
-    analytics: [
-      { date: "Mon", clicks: 45 },
-      { date: "Tue", clicks: 90 },
-      { date: "Wed", clicks: 135 },
-      { date: "Thu", clicks: 180 },
-      { date: "Fri", clicks: 150 },
-      { date: "Sat", clicks: 120 },
-      { date: "Sun", clicks: 95 },
-    ]
+  // Use real-time data hook
+  const { links, stats, analytics, loading: dataLoading, error, refreshData } = useRealtimeLinks(user?.id);
+
+  const handleDeleteLink = async (linkId) => {
+    if (window.confirm('Are you sure you want to delete this link?')) {
+      try {
+        await deleteLink(linkId, user.id);
+        // Data will automatically refresh due to real-time subscription
+      } catch (error) {
+        console.error('Error deleting link:', error);
+        alert('Failed to delete link. Please try again.');
+      }
+    }
+  };
+
+  const copyToClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      alert("Link copied to clipboard!");
+    } catch (error) {
+      console.error("Failed to copy:", error);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 1) return "1 day ago";
+    if (diffDays < 7) return `${diffDays} days ago`;
+    return date.toLocaleDateString();
   };
 
   // Show loading state while checking authentication
@@ -79,6 +100,13 @@ const Dashboard = () => {
             </div>
           </div>
 
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <p className="text-red-600">Error: {error}</p>
+            </div>
+          )}
+
           {/* Metrics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Total Links Card */}
@@ -90,7 +118,9 @@ const Dashboard = () => {
                 <Link className="h-4 w-4 text-purple-600" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-gray-900">{dashboardData.totalLinks}</div>
+                <div className="text-2xl font-bold text-gray-900">
+                  {dataLoading ? "..." : stats.totalLinks}
+                </div>
                 <p className="text-xs text-gray-500 mt-1">Active short links</p>
               </CardContent>
             </Card>
@@ -105,7 +135,7 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-gray-900">
-                  {dashboardData.totalClicks.toLocaleString()}
+                  {dataLoading ? "..." : stats.totalClicks.toLocaleString()}
                 </div>
                 <p className="text-xs text-gray-500 mt-1">All time clicks</p>
               </CardContent>
@@ -121,7 +151,7 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-gray-900">
-                  {dashboardData.averageClicks.toLocaleString()}
+                  {dataLoading ? "..." : stats.averageClicks.toLocaleString()}
                 </div>
                 <p className="text-xs text-gray-500 mt-1">Per link</p>
               </CardContent>
@@ -140,59 +170,181 @@ const Dashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="h-64 flex items-end justify-between gap-2 px-4">
-                {dashboardData.analytics.map((data, index) => {
-                  const maxClicks = Math.max(...dashboardData.analytics.map(d => d.clicks));
-                  const height = (data.clicks / maxClicks) * 100;
+              {dataLoading ? (
+                <div className="h-64 flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+                </div>
+              ) : (
+                <div className="h-64 relative px-4">
+                  {/* Line Chart */}
+                  <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    {/* Grid lines */}
+                    <defs>
+                      <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                        <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#f3f4f6" strokeWidth="0.5"/>
+                      </pattern>
+                    </defs>
+                    <rect width="100" height="100" fill="url(#grid)" />
+                    
+                    {/* Line chart */}
+                    {analytics.length > 1 && (
+                      <g>
+                        {/* Area fill under the line */}
+                        <defs>
+                          <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.3" />
+                            <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.05" />
+                          </linearGradient>
+                          <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#8b5cf6" />
+                            <stop offset="100%" stopColor="#a855f7" />
+                          </linearGradient>
+                        </defs>
+                        
+                        {/* Area path */}
+                        <path
+                          d={(() => {
+                            const points = analytics.map((data, index) => {
+                              const x = (index / (analytics.length - 1)) * 90 + 5;
+                              const maxClicks = Math.max(...analytics.map(d => d.clicks), 1);
+                              const y = 95 - ((data.clicks / maxClicks) * 80);
+                              return `${x},${y}`;
+                            });
+                            return `M ${points[0]} L ${points.slice(1).join(' L ')} L ${points[points.length - 1].split(',')[0]},95 L ${points[0].split(',')[0]},95 Z`;
+                          })()}
+                          fill="url(#areaGradient)"
+                        />
+                        
+                        {/* Line path */}
+                        <path
+                          d={analytics.map((data, index) => {
+                            const x = (index / (analytics.length - 1)) * 90 + 5;
+                            const maxClicks = Math.max(...analytics.map(d => d.clicks), 1);
+                            const y = 95 - ((data.clicks / maxClicks) * 80);
+                            return `${index === 0 ? 'M' : 'L'} ${x} ${y}`;
+                          }).join(' ')}
+                          fill="none"
+                          stroke="url(#lineGradient)"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        
+                        {/* Data points */}
+                        {analytics.map((data, index) => {
+                          const x = (index / (analytics.length - 1)) * 90 + 5;
+                          const maxClicks = Math.max(...analytics.map(d => d.clicks), 1);
+                          const y = 95 - ((data.clicks / maxClicks) * 80);
+                          return (
+                            <circle
+                              key={index}
+                              cx={x}
+                              cy={y}
+                              r="3"
+                              fill="#8b5cf6"
+                              stroke="white"
+                              strokeWidth="2"
+                            />
+                          );
+                        })}
+                      </g>
+                    )}
+                  </svg>
                   
-                  return (
-                    <div key={index} className="flex flex-col items-center gap-2">
-                      <div className="text-xs text-gray-500">{data.clicks}</div>
-                      <div 
-                        className="w-8 bg-gradient-to-t from-purple-600 to-purple-400 rounded-t"
-                        style={{ height: `${height}%` }}
-                      ></div>
-                      <div className="text-xs text-gray-500">{data.date}</div>
-                    </div>
-                  );
-                })}
-              </div>
+                  {/* X-axis labels */}
+                  <div className="flex justify-between mt-2">
+                    {analytics.map((data, index) => (
+                      <div key={index} className="text-xs text-gray-500 text-center">
+                        {data.date}
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Y-axis labels */}
+                  <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500 py-4">
+                    {(() => {
+                      const maxClicks = Math.max(...analytics.map(d => d.clicks), 1);
+                      return [maxClicks, Math.round(maxClicks * 0.75), Math.round(maxClicks * 0.5), Math.round(maxClicks * 0.25), 0].map((value, index) => (
+                        <div key={index}>{value}</div>
+                      ));
+                    })()}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
           {/* Recent Links Section */}
           <Card className="bg-white border border-gray-200">
             <CardHeader>
-              <CardTitle>Recent Links</CardTitle>
+              <CardTitle>Your Links</CardTitle>
               <CardDescription>
-                Your most recently created short links
+                Manage your shortened links
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {/* Mock recent links - replace with real data */}
-                <div className="flex items-center justify-between p-4 border border-gray-100 rounded-lg">
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-900">youtube.com/watch?v=example</div>
-                    <div className="text-sm text-purple-600">short.ly/abc123</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-medium text-gray-900">1,234 clicks</div>
-                    <div className="text-sm text-gray-500">Created 2 days ago</div>
-                  </div>
+              {dataLoading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto mb-4"></div>
+                  <p className="text-gray-500">Loading your links...</p>
                 </div>
-                
-                <div className="flex items-center justify-between p-4 border border-gray-100 rounded-lg">
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-900">github.com/username/repo</div>
-                    <div className="text-sm text-purple-600">short.ly/def456</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-medium text-gray-900">856 clicks</div>
-                    <div className="text-sm text-gray-500">Created 5 days ago</div>
-                  </div>
+              ) : links.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <p>No links created yet.</p>
+                  <p className="text-sm mt-2">Create your first shortened link to get started!</p>
                 </div>
-              </div>
+              ) : (
+                <div className="space-y-4">
+                  {links.map((link) => (
+                    <div key={link.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-lg">
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900 truncate">
+                          {link.original_url}
+                        </div>
+                        <div className="text-sm text-purple-600">
+                          short.ly/{link.short_code}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <div className="font-medium text-gray-900">
+                            {link.clicks.toLocaleString()} clicks
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {formatDate(link.created_at)}
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => copyToClipboard(`short.ly/${link.short_code}`)}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Copy size={14} />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => window.open(link.original_url, '_blank')}
+                            className="h-8 w-8 p-0"
+                          >
+                            <ExternalLink size={14} />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteLink(link.id)}
+                            className="h-8 w-8 p-0 text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 size={14} />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

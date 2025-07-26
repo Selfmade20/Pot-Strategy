@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UrlState } from "../context";
+import { createShortLink } from "../db/apiLinks";
 
 const Home = () => {
   const [longUrl, setLongUrl] = useState("");
@@ -13,28 +14,28 @@ const Home = () => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = UrlState();
 
-  const createShortLink = async (url) => {
-    // Mock API call - replace with your actual API
+  const handleCreateLink = async (url) => {
     setIsCreating(true);
     
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Generate a mock short link
-    const shortCode = Math.random().toString(36).substring(2, 8);
-    const shortUrl = `short.ly/${shortCode}`;
-    
-    // Mock response
-    const newLink = {
-      id: Date.now(),
-      originalUrl: url,
-      shortUrl: shortUrl,
-      clicks: 0,
-      createdAt: new Date().toISOString(),
-    };
-    
-    setIsCreating(false);
-    return newLink;
+    try {
+      console.log('Creating link for user:', user.id, 'URL:', url);
+      const newLink = await createShortLink(user.id, url);
+      
+      // Format the response to match our component expectations
+      const formattedLink = {
+        id: newLink.id,
+        originalUrl: newLink.original_url,
+        shortUrl: `short.ly/${newLink.short_code}`,
+        clicks: newLink.clicks,
+        createdAt: newLink.created_at,
+      };
+      
+      setIsCreating(false);
+      return formattedLink;
+    } catch (error) {
+      setIsCreating(false);
+      throw error;
+    }
   };
 
   const handleShorten = async (e) => {
@@ -44,11 +45,12 @@ const Home = () => {
     if (isAuthenticated) {
       // User is logged in, create the link directly
       try {
-        const newLink = await createShortLink(longUrl);
+        const newLink = await handleCreateLink(longUrl);
         setCreatedLink(newLink);
         setLongUrl(""); // Clear the input
       } catch (error) {
         console.error("Error creating link:", error);
+        alert(`Failed to create link: ${error.message || error}`);
       }
     } else {
       // User is not logged in, redirect to auth page
@@ -183,27 +185,7 @@ const Home = () => {
             </Card>
           </div>
 
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
-            <Card className="text-center shadow-md rounded-xl">
-              <CardContent className="py-6">
-                <div className="text-2xl font-bold text-purple-600 mb-2">4</div>
-                <p className="text-gray-600">Total Links</p>
-              </CardContent>
-            </Card>
-            <Card className="text-center shadow-md rounded-xl">
-              <CardContent className="py-6">
-                <div className="text-2xl font-bold text-green-600 mb-2">4,638</div>
-                <p className="text-gray-600">Total Clicks</p>
-              </CardContent>
-            </Card>
-            <Card className="text-center shadow-md rounded-xl">
-              <CardContent className="py-6">
-                <div className="text-2xl font-bold text-yellow-600 mb-2">1,160</div>
-                <p className="text-gray-600">Avg. Clicks</p>
-              </CardContent>
-            </Card>
-          </div>
+
         </div>
       </section>
     );
