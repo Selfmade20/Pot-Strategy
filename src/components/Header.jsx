@@ -11,7 +11,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { LinkIcon, LogOut } from "lucide-react";
 import { UrlState } from "../context";
-import { supabase } from "../db/supabase";
+import { logout } from "../db/apiAuth";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ const Header = () => {
           <DropdownMenu>
             <DropdownMenuTrigger className="w-8 rounded-full overflow-hidden">
               <Avatar>
-                <AvatarImage src={user?.user_metadata?.avatar_url || "https://github.com/shadcn.png"} />
+                <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>{user?.email?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
@@ -53,9 +53,13 @@ const Header = () => {
               <DropdownMenuItem 
                 className="text-red-500"
                 onClick={async () => {
-                  await supabase.auth.signOut();
-                  fetchUser();
-                  navigate("/");
+                  try {
+                    await logout();
+                    fetchUser();
+                    navigate("/");
+                  } catch (error) {
+                    console.error("Logout error:", error);
+                  }
                 }}
               >
                 <LogOut className="w-4 h-4 mr-2" />
