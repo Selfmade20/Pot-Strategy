@@ -2,7 +2,7 @@ import "./App.css";
 import AppLayout from "./layouts/AppLayout";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
-import Dasboard from "./pages/Dasboard";
+import Dashboard from "./pages/Dashboard";
 import Link from "./pages/Link";
 import Redirect from "./pages/Redirect";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -30,7 +30,7 @@ const router = createBrowserRouter([
         path: "/dashboard",
         element: (
           <ProtectedRoute>
-            <Dasboard />
+            <Dashboard />
           </ProtectedRoute>
         ),
       },
