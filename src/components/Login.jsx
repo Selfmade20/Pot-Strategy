@@ -11,9 +11,10 @@ import { Button } from "./ui/button";
 import { BeatLoader } from "react-spinners";
 import Error from "./Error";
 import { useState } from "react";
+import * as Yup from "yup";
 
 const Login = () => {
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState([]);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -28,7 +29,28 @@ const Login = () => {
     }));
   };
 
-  const handleLogin =  () => {
+  const handleLogin = async () => {
+    setErrors([]);
+    try {
+      const schema = Yup.object().shape({
+        email: Yup.string()
+          .email("Invalid email")
+          .required("Email is required"),
+        password: Yup.string()
+          .min(8, "Password must be at least 8 characters")
+          .required("Password is required"),
+      });
+      schema.validateSync(formData, { abortEarly: false });
+    } catch (e) {
+      const newErrors = {};
+
+      e?.inner?.forEach((error) => {
+        newErrors[error.path] = error.message;
+      });
+
+      setErrors(newErrors);
+    }
+  };
 
   return (
     <Card className="mt-5">
@@ -45,7 +67,7 @@ const Login = () => {
             placeholder="Enter your email"
             onChange={handleInputChange}
           />
-          <Error message={"some error message"} />
+          {errors.email && <Error message={errors.email} />}
         </div>
         <div className="space-y-1">
           <Input
@@ -54,11 +76,14 @@ const Login = () => {
             placeholder="Enter your password"
             onChange={handleInputChange}
           />
-          <Error message="some error message" />
+          {errors.password && <Error message={errors.password} />}
         </div>
       </CardContent>
       <CardFooter>
-        <Button className="bg-gradient-to-tr from-purple-500 to-purple-400 text-white">
+        <Button
+          onClick={handleLogin}
+          className="bg-gradient-to-tr from-purple-500 to-purple-400 text-white cursor-pointer"
+        >
           {true ? <BeatLoader size={10} color="#fff" /> : "Login"}
         </Button>
       </CardFooter>
