@@ -8,6 +8,7 @@ import { useRealtimeLinks } from "../hooks/useRealtimeLinks";
 import { deleteLink, trackLinkClick } from "../db/apiLinks";
 import { generateShortUrl } from "../config";
 import Toast from "../components/Toast";
+import ConfirmDialog from "../components/ConfirmDialog";
 
 const Dashboard = () => {
   const { user, loading } = UrlState();
@@ -18,36 +19,47 @@ const Dashboard = () => {
   // Use real-time data hook
   const { links, stats, analytics, loading: dataLoading, error, refreshData, setLinks, setStats } = useRealtimeLinks(user?.id);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+  const [confirmDialog, setConfirmDialog] = useState({ 
+    isOpen: false, 
+    linkId: null, 
+    linkUrl: '' 
+  });
 
   const handleDeleteLink = async (linkId) => {
-    if (window.confirm('Are you sure you want to delete this link?')) {
-      try {
-        console.log('Delete request - Link ID:', linkId, 'User ID:', user?.id);
-        
-        if (!user?.id) {
-          throw new Error('User not authenticated');
-        }
-        
-        await deleteLink(linkId, user.id);
-        
-        // Immediately update the UI by removing the deleted link
-        setLinks(prevLinks => prevLinks.filter(link => link.id !== linkId));
-        
-        // Update stats immediately
-        setStats(prevStats => ({
-          ...prevStats,
-          totalLinks: prevStats.totalLinks - 1
-        }));
-        
-        setToast({ show: true, message: 'Link deleted successfully!', type: 'success' });
-        
-        // Also refresh data to ensure everything is in sync
-        refreshData();
-      } catch (error) {
-        console.error('Error deleting link:', error);
-        setToast({ show: true, message: 'Failed to delete link. Please try again.', type: 'error' });
+    try {
+      console.log('Delete request - Link ID:', linkId, 'User ID:', user?.id);
+      
+      if (!user?.id) {
+        throw new Error('User not authenticated');
       }
+      
+      await deleteLink(linkId, user.id);
+      
+      // Immediately update the UI by removing the deleted link
+      setLinks(prevLinks => prevLinks.filter(link => link.id !== linkId));
+      
+      // Update stats immediately
+      setStats(prevStats => ({
+        ...prevStats,
+        totalLinks: prevStats.totalLinks - 1
+      }));
+      
+      setToast({ show: true, message: 'Link deleted successfully!', type: 'success' });
+      
+      // Also refresh data to ensure everything is in sync
+      refreshData();
+    } catch (error) {
+      console.error('Error deleting link:', error);
+      setToast({ show: true, message: 'Failed to delete link. Please try again.', type: 'error' });
     }
+  };
+
+  const openDeleteConfirm = (linkId, linkUrl) => {
+    setConfirmDialog({
+      isOpen: true,
+      linkId,
+      linkUrl
+    });
   };
 
   const copyToClipboard = async (text) => {
@@ -90,6 +102,17 @@ const Dashboard = () => {
         isVisible={toast.show}
         onClose={() => setToast({ ...toast, show: false })}
         type={toast.type}
+      />
+      
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        onClose={() => setConfirmDialog({ isOpen: false, linkId: null, linkUrl: '' })}
+        onConfirm={() => handleDeleteLink(confirmDialog.linkId)}
+        title="Delete Link"
+        message={`Are you sure you want to delete this link? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        type="danger"
       />
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-4 sm:px-6 py-4">
@@ -384,7 +407,7 @@ const Dashboard = () => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleDeleteLink(link.id)}
+                            onClick={() => openDeleteConfirm(link.id, link.original_url)}
                             className="h-8 w-8 p-0 text-red-500 hover:text-red-700"
                           >
                             <Trash2 size={14} />
