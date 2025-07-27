@@ -125,9 +125,6 @@ That's it! The application will be running and accessible.
 
 ### Deployment Options:
 - **Docker** - Containerized deployment (recommended)
-- **Vercel** - Easy deployment with automatic environment variable setup
-- **Netlify** - Simple deployment with build settings
-- **Railway** - Full-stack deployment platform
 
 ## How It Works
 
@@ -148,7 +145,7 @@ That's it! The application will be running and accessible.
 - **Backend**: Supabase (Database, Auth, Real-time)
 - **UI Components**: Shadcn UI
 - **Charts**: Custom SVG line charts
-- **Deployment**: Docker, Vercel/Netlify ready
+- **Deployment**: Docker
 
 ## Visual Documentation
 
