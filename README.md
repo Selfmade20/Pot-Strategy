@@ -4,19 +4,35 @@ A modern, real-time URL shortening application built with React, Vite, and Supab
 
 ## 🚀 Quick Start (For Non-Technical Users)
 
-**To run this application, you only need Docker installed on your computer.**
+**To run this application, you only need Docker Desktop installed on your computer.**
 
-1. **Download the project files** (this folder)
-2. **Open Command Prompt/Terminal** in this folder
-3. **Run this single command:**
+### 📋 Prerequisites:
+- **Docker Desktop** must be installed and running
+- **Windows/Mac/Linux** - works on all operating systems
+
+### 🎯 Step-by-Step Instructions:
+
+1. **📁 Extract the zip file** to a folder on your computer
+2. **📂 Open the extracted folder** (you should see files like `docker-compose.yml`, `README.md`, etc.)
+3. **🖱️ Right-click in the folder** while holding `Shift` key
+4. **📝 Select "Open PowerShell window here"** or "Open command window here"
+5. **⌨️ Type this command and press Enter:**
    ```bash
    docker-compose up
    ```
-4. **Open your web browser** and go to: `http://localhost:3000`
+6. **⏳ Wait for it to finish loading** (you'll see lots of text scrolling)
+7. **🌐 Open your web browser** and go to: `http://localhost:3000`
 
-That's it! The application will be running and accessible.
+**✅ Success!** The application is now running and accessible.
 
-**To stop the application:** Press `Ctrl+C` in the terminal, or run `docker-compose down`
+### 🛑 To Stop the Application:
+- **Press `Ctrl+C`** in the terminal window
+- **Or close the terminal window**
+
+### 🆘 If Something Goes Wrong:
+- Make sure **Docker Desktop is running**
+- Try running the command again
+- Check that you're in the correct folder
 
 ## Features
 
