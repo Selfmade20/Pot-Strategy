@@ -5,6 +5,8 @@ import { Link, TrendingUp, Star, BarChart3, Home, Plus, ExternalLink, Copy, Tras
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useRealtimeLinks } from "../hooks/useRealtimeLinks";
 import { deleteLink } from "../db/apiLinks";
+import { generateShortUrl } from "../config";
+import Toast from "../components/Toast";
 
 const Dashboard = () => {
   const { user, loading } = UrlState();
@@ -14,15 +16,17 @@ const Dashboard = () => {
 
   // Use real-time data hook
   const { links, stats, analytics, loading: dataLoading, error, refreshData } = useRealtimeLinks(user?.id);
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
 
   const handleDeleteLink = async (linkId) => {
     if (window.confirm('Are you sure you want to delete this link?')) {
       try {
         await deleteLink(linkId, user.id);
+        setToast({ show: true, message: 'Link deleted successfully!', type: 'success' });
         // Data will automatically refresh due to real-time subscription
       } catch (error) {
         console.error('Error deleting link:', error);
-        alert('Failed to delete link. Please try again.');
+        setToast({ show: true, message: 'Failed to delete link. Please try again.', type: 'error' });
       }
     }
   };
@@ -30,9 +34,10 @@ const Dashboard = () => {
   const copyToClipboard = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
-      alert("Link copied to clipboard!");
+      setToast({ show: true, message: 'Link copied to clipboard!', type: 'success' });
     } catch (error) {
       console.error("Failed to copy:", error);
+      setToast({ show: true, message: 'Failed to copy link', type: 'error' });
     }
   };
 
@@ -61,6 +66,12 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Toast 
+        message={toast.message}
+        isVisible={toast.show}
+        onClose={() => setToast({ ...toast, show: false })}
+        type={toast.type}
+      />
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex justify-between items-center">
@@ -302,7 +313,7 @@ const Dashboard = () => {
                           {link.original_url}
                         </div>
                         <div className="text-sm text-purple-600">
-                          short.ly/{link.short_code}
+                          {generateShortUrl(link.short_code)}
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
@@ -318,7 +329,7 @@ const Dashboard = () => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => copyToClipboard(`short.ly/${link.short_code}`)}
+                            onClick={() => copyToClipboard(generateShortUrl(link.short_code))}
                             className="h-8 w-8 p-0"
                           >
                             <Copy size={14} />
