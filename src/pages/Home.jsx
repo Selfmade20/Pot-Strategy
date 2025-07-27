@@ -6,11 +6,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UrlState } from "../context";
 import { createShortLink } from "../db/apiLinks";
+import { generateShortUrl } from "../config";
+import Toast from "../components/Toast";
 
 const Home = () => {
   const [longUrl, setLongUrl] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [createdLink, setCreatedLink] = useState(null);
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
   const navigate = useNavigate();
   const { isAuthenticated, user } = UrlState();
 
@@ -25,7 +28,7 @@ const Home = () => {
       const formattedLink = {
         id: newLink.id,
         originalUrl: newLink.original_url,
-        shortUrl: `short.ly/${newLink.short_code}`,
+        shortUrl: generateShortUrl(newLink.short_code),
         clicks: newLink.clicks,
         createdAt: newLink.created_at,
       };
@@ -50,7 +53,7 @@ const Home = () => {
         setLongUrl(""); // Clear the input
       } catch (error) {
         console.error("Error creating link:", error);
-        alert(`Failed to create link: ${error.message || error}`);
+        setToast({ show: true, message: `Failed to create link: ${error.message || error}`, type: 'error' });
       }
     } else {
       // User is not logged in, redirect to auth page
@@ -61,10 +64,10 @@ const Home = () => {
   const copyToClipboard = async (text) => {
     try {
       await navigator.clipboard.writeText(text);
-      // You could add a toast notification here
-      alert("Link copied to clipboard!");
+      setToast({ show: true, message: 'Link copied to clipboard!', type: 'success' });
     } catch (error) {
       console.error("Failed to copy:", error);
+      setToast({ show: true, message: 'Failed to copy link', type: 'error' });
     }
   };
 
@@ -93,6 +96,12 @@ const Home = () => {
   if (isAuthenticated) {
     return (
       <section className="bg-[oklch(98.41%_0.006_293.63)] min-h-screen">
+        <Toast 
+          message={toast.message}
+          isVisible={toast.show}
+          onClose={() => setToast({ ...toast, show: false })}
+          type={toast.type}
+        />
         <div className="container mx-auto px-4 sm:px-8 max-w-screen-xl">
           {/* Welcome Section */}
           <div className="text-center pt-10 pb-8">
