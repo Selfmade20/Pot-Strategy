@@ -118,6 +118,9 @@ A modern, real-time URL shortening application built with React, Vite, and Supab
 
    CREATE POLICY "Users can update their own links" ON links
      FOR UPDATE USING (auth.uid() = user_id);
+
+   CREATE POLICY "Users can delete their own links" ON links
+     FOR DELETE USING (auth.uid() = user_id);
    ```
 
 5. **Start development server**

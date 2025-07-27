@@ -22,6 +22,12 @@ const Dashboard = () => {
   const handleDeleteLink = async (linkId) => {
     if (window.confirm('Are you sure you want to delete this link?')) {
       try {
+        console.log('Delete request - Link ID:', linkId, 'User ID:', user?.id);
+        
+        if (!user?.id) {
+          throw new Error('User not authenticated');
+        }
+        
         await deleteLink(linkId, user.id);
         
         // Immediately update the UI by removing the deleted link

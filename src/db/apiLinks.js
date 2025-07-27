@@ -231,13 +231,23 @@ export async function getClickAnalytics(userId) {
 // Delete a link
 export async function deleteLink(linkId, userId) {
   try {
-    const { error } = await supabase
+    console.log('Attempting to delete link:', { linkId, userId });
+    
+    const { data, error } = await supabase
       .from('links')
       .update({ is_active: false })
       .eq('id', linkId)
-      .eq('user_id', userId);
+      .eq('user_id', userId)
+      .select();
 
-    if (error) throw error;
+    console.log('Delete operation result:', { data, error });
+
+    if (error) {
+      console.error('Supabase error during delete:', error);
+      throw error;
+    }
+    
+    console.log('Link deleted successfully:', data);
     return true;
   } catch (error) {
     console.error('Error deleting link:', error);
