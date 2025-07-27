@@ -95,6 +95,36 @@ A modern, real-time URL shortening application built with React, Vite, and Supab
 
 ## Production Deployment
 
+### Docker Deployment (Recommended)
+
+The application is fully containerized and can be deployed with a single command:
+
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd Pot-Strategy
+   ```
+
+2. **Set up environment variables:**
+   ```bash
+   cp docker.env.example .env
+   # Edit .env with your Supabase credentials
+   ```
+
+3. **Launch with Docker Compose:**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **Access the application:**
+   - Open http://localhost:3000 in your browser
+
+### Alternative Deployment Options:
+- **Vercel** - Easy deployment with automatic environment variable setup
+- **Netlify** - Simple deployment with build settings
+- **Railway** - Full-stack deployment platform
+- **Render** - Static site or web service deployment
+
 ### For Production, update the base URL:
 
 1. **Add environment variable** in your production environment:
@@ -106,11 +136,6 @@ A modern, real-time URL shortening application built with React, Vite, and Supab
    ```javascript
    baseUrl: 'https://yourdomain.com'
    ```
-
-### Deployment Options:
-- **Vercel** - Easy deployment with automatic environment variable setup
-- **Netlify** - Simple deployment with build settings
-- **Railway** - Full-stack deployment platform
 
 ## How It Works
 
