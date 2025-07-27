@@ -13,8 +13,17 @@ console.log('Current directory:', __dirname);
 console.log('Dist folder exists:', fs.existsSync(path.join(__dirname, 'dist')));
 console.log('Dist folder contents:', fs.readdirSync(__dirname));
 
-// Serve static files from the dist directory
-app.use(express.static(path.join(__dirname, 'dist')));
+// Check if we're in the root directory or dist directory
+const isInRoot = fs.existsSync(path.join(__dirname, 'dist'));
+const staticPath = isInRoot ? path.join(__dirname, 'dist') : __dirname;
+const indexPath = isInRoot ? path.join(__dirname, 'dist', 'index.html') : path.join(__dirname, 'index.html');
+
+console.log('Static path:', staticPath);
+console.log('Index path:', indexPath);
+console.log('Index exists:', fs.existsSync(indexPath));
+
+// Serve static files
+app.use(express.static(staticPath));
 
 // Add a test route to check if server is working
 app.get('/test', (req, res) => {
@@ -22,13 +31,15 @@ app.get('/test', (req, res) => {
     message: 'Server is working!',
     timestamp: new Date().toISOString(),
     distExists: fs.existsSync(path.join(__dirname, 'dist')),
-    distContents: fs.readdirSync(__dirname)
+    distContents: fs.readdirSync(__dirname),
+    staticPath: staticPath,
+    indexPath: indexPath,
+    indexExists: fs.existsSync(indexPath)
   });
 });
 
 // Handle all routes by serving index.html
 app.get('/', (req, res) => {
-  const indexPath = path.join(__dirname, 'dist', 'index.html');
   console.log('Serving index.html from:', indexPath);
   console.log('File exists:', fs.existsSync(indexPath));
   
