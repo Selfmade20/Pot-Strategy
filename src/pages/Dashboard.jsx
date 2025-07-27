@@ -23,8 +23,20 @@ const Dashboard = () => {
     if (window.confirm('Are you sure you want to delete this link?')) {
       try {
         await deleteLink(linkId, user.id);
+        
+        // Immediately update the UI by removing the deleted link
+        setLinks(prevLinks => prevLinks.filter(link => link.id !== linkId));
+        
+        // Update stats immediately
+        setStats(prevStats => ({
+          ...prevStats,
+          totalLinks: prevStats.totalLinks - 1
+        }));
+        
         setToast({ show: true, message: 'Link deleted successfully!', type: 'success' });
-        // Data will automatically refresh due to real-time subscription
+        
+        // Also refresh data to ensure everything is in sync
+        refreshData();
       } catch (error) {
         console.error('Error deleting link:', error);
         setToast({ show: true, message: 'Failed to delete link. Please try again.', type: 'error' });
