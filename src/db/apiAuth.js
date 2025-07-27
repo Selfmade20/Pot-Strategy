@@ -43,10 +43,18 @@ export async function getCurrentUser() {
 
 export async function logout() {
   try {
+    // Clear any stored session data
+    localStorage.removeItem('supabase.auth.token');
+    sessionStorage.removeItem('supabase.auth.token');
+    
     const { error } = await supabase.auth.signOut();
     if (error) {
       throw new Error(error.message);
     }
+    
+    // Force clear any remaining auth state
+    await supabase.auth.setSession(null);
+    
     return true;
   } catch (error) {
     console.error('Error logging out:', error);
