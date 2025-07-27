@@ -2,6 +2,22 @@
 
 A modern, real-time URL shortening application built with React, Vite, and Supabase.
 
+## 🚀 Quick Start (For Non-Technical Users)
+
+**To run this application, you only need Docker installed on your computer.**
+
+1. **Download the project files** (this folder)
+2. **Open Command Prompt/Terminal** in this folder
+3. **Run this single command:**
+   ```bash
+   docker-compose up
+   ```
+4. **Open your web browser** and go to: `http://localhost:3000`
+
+That's it! The application will be running and accessible.
+
+**To stop the application:** Press `Ctrl+C` in the terminal, or run `docker-compose down`
+
 ## Features
 
 - ✅ **Real-time URL shortening** - Create short links instantly
@@ -95,36 +111,6 @@ A modern, real-time URL shortening application built with React, Vite, and Supab
 
 ## Production Deployment
 
-### Docker Deployment (Recommended)
-
-The application is fully containerized and can be deployed with a single command:
-
-1. **Clone the repository:**
-   ```bash
-   git clone <repository-url>
-   cd Pot-Strategy
-   ```
-
-2. **Set up environment variables:**
-   ```bash
-   cp docker.env.example .env
-   # Edit .env with your Supabase credentials
-   ```
-
-3. **Launch with Docker Compose:**
-   ```bash
-   docker-compose up -d
-   ```
-
-4. **Access the application:**
-   - Open http://localhost:3000 in your browser
-
-### Alternative Deployment Options:
-- **Vercel** - Easy deployment with automatic environment variable setup
-- **Netlify** - Simple deployment with build settings
-- **Railway** - Full-stack deployment platform
-- **Render** - Static site or web service deployment
-
 ### For Production, update the base URL:
 
 1. **Add environment variable** in your production environment:
@@ -137,6 +123,12 @@ The application is fully containerized and can be deployed with a single command
    baseUrl: 'https://yourdomain.com'
    ```
 
+### Deployment Options:
+- **Docker** - Containerized deployment (recommended)
+- **Vercel** - Easy deployment with automatic environment variable setup
+- **Netlify** - Simple deployment with build settings
+- **Railway** - Full-stack deployment platform
+
 ## How It Works
 
 1. **Create Link** - User enters a long URL and gets a short code
@@ -146,9 +138,9 @@ The application is fully containerized and can be deployed with a single command
 
 ## Deployment Notes
 
-- **Static Site Deployment**: Currently deployed on Render as a Static Site
+- **Docker Deployment**: Containerized application ready for easy deployment
 - **Dashboard Functionality**: All dashboard features work perfectly including link creation and analytics
-- **Direct Link Access**: Short links work when accessed from the dashboard. For direct URL access, consider deploying as a Web Service or using Netlify for better SPA routing support.
+- **Direct Link Access**: Short links work when accessed from the dashboard. For direct URL access, the Docker setup handles SPA routing properly.
 
 ## Tech Stack
 
@@ -156,7 +148,7 @@ The application is fully containerized and can be deployed with a single command
 - **Backend**: Supabase (Database, Auth, Real-time)
 - **UI Components**: Shadcn UI
 - **Charts**: Custom SVG line charts
-- **Deployment**: Render, Vercel/Netlify ready
+- **Deployment**: Docker, Vercel/Netlify ready
 
 ## Visual Documentation
 
