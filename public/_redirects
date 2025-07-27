@@ -1,8 +1,2 @@
 # Handle client-side routing for React Router
-/*    /index.html   200
-
-# Handle API routes if needed
-/api/*  https://your-api-url.com/:splat  200
-
-# Handle static assets
-/assets/*  /assets/:splat  200 
+/*    /index.html   200 
