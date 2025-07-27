@@ -105,6 +105,8 @@ export const useRealtimeLinks = (userId) => {
     analytics,
     loading,
     error,
-    refreshData
+    refreshData,
+    setLinks,
+    setStats
   };
 }; 

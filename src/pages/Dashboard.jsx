@@ -16,7 +16,7 @@ const Dashboard = () => {
   const createNewUrl = searchParams.get("createNew");
 
   // Use real-time data hook
-  const { links, stats, analytics, loading: dataLoading, error, refreshData } = useRealtimeLinks(user?.id);
+  const { links, stats, analytics, loading: dataLoading, error, refreshData, setLinks, setStats } = useRealtimeLinks(user?.id);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
 
   const handleDeleteLink = async (linkId) => {
