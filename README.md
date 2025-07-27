@@ -12,6 +12,28 @@ A modern, real-time URL shortening application built with React, Vite, and Supab
 - ✅ **Copy functionality** - Easy copying of short links
 - ✅ **Responsive design** - Works on all devices
 
+## Screenshots
+
+### 🏠 Homepage
+![Homepage](screenshots/homepage.png)
+*Clean, modern homepage with URL shortening form and feature highlights*
+
+### 🔐 Authentication
+![Authentication](screenshots/auth.png)
+*Secure login and signup forms with password visibility toggles*
+
+### 📊 Dashboard
+![Dashboard](screenshots/dashboard.png)
+*Comprehensive dashboard with real-time analytics, click tracking, and link management*
+
+### 📈 Analytics
+![Analytics](screenshots/analytics.png)
+*Beautiful line charts showing click trends and performance metrics*
+
+### 📱 Mobile Responsive
+![Mobile](screenshots/mobile.png)
+*Fully responsive design that works perfectly on all devices*
+
 ## Development Setup
 
 1. **Clone the repository**
@@ -101,4 +123,14 @@ A modern, real-time URL shortening application built with React, Vite, and Supab
 - **Backend**: Supabase (Database, Auth, Real-time)
 - **UI Components**: Shadcn UI
 - **Charts**: Custom SVG line charts
-- **Deployment**: Vercel/Netlify ready
+- **Deployment**: Render, Vercel/Netlify ready
+
+## Visual Documentation
+
+The app includes comprehensive visual documentation with screenshots showing:
+- **User Interface**: Clean, modern design with purple gradient theme
+- **Functionality**: Real-time features, analytics, and user management
+- **Responsive Design**: Mobile-first approach with touch-friendly interactions
+- **Professional Polish**: Toast notifications, loading states, and smooth animations
+
+See the `screenshots/` directory for detailed capture instructions.
