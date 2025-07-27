@@ -151,7 +151,8 @@ const Home = () => {
                         <span className="text-sm text-gray-600">Original URL:</span>
                         <ExternalLink size={16} className="text-gray-400" />
                       </div>
-                      <p className="text-gray-900 text-sm break-all mb-4">
+                      <p className="text-gray-900 text-sm break-all mb-4 line-clamp-2 hover:line-clamp-none transition-all duration-200 cursor-pointer" 
+                         title={createdLink.originalUrl}>
                         {createdLink.originalUrl}
                       </p>
                       
@@ -166,7 +167,7 @@ const Home = () => {
                           <Copy size={14} />
                         </Button>
                       </div>
-                      <p className="text-purple-600 font-semibold text-lg">
+                      <p className="text-purple-600 font-semibold text-base sm:text-lg break-all">
                         {createdLink.shortUrl}
                       </p>
                     </div>

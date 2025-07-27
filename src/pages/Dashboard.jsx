@@ -310,10 +310,17 @@ const Dashboard = () => {
                   {links.map((link) => (
                     <div key={link.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border border-gray-100 rounded-lg gap-4">
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-gray-900 truncate text-sm sm:text-base">
-                          {link.original_url}
+                        <div className="group relative">
+                          <div className="font-medium text-gray-900 text-sm sm:text-base break-all line-clamp-2 hover:line-clamp-none transition-all duration-200 cursor-pointer" 
+                               title={link.original_url}>
+                            {link.original_url}
+                          </div>
+                          {/* Tooltip for mobile */}
+                          <div className="sm:hidden absolute bottom-full left-0 right-0 bg-gray-900 text-white text-xs p-2 rounded mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                            {link.original_url}
+                          </div>
                         </div>
-                        <div className="text-xs sm:text-sm text-purple-600 truncate">
+                        <div className="text-xs sm:text-sm text-purple-600 break-all mt-1">
                           {generateShortUrl(link.short_code)}
                         </div>
                       </div>
