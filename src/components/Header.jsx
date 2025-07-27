@@ -46,7 +46,7 @@ const Header = () => {
             <DropdownMenuContent>
               <DropdownMenuLabel>{user?.email || "User"}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/dashboard")}>
                 <LinkIcon className="w-4 h-4 mr-2" />
                 <span>My Links</span>
               </DropdownMenuItem>
