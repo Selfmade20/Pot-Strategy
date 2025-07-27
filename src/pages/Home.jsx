@@ -104,19 +104,19 @@ const Home = () => {
         />
         <div className="container mx-auto px-4 sm:px-8 max-w-screen-xl">
           {/* Welcome Section */}
-          <div className="text-center pt-10 pb-8">
-            <h2 className="text-3xl sm:text-4xl font-bold text-purple-600 mb-4">
+          <div className="text-center pt-6 sm:pt-10 pb-6 sm:pb-8">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-purple-600 mb-3 sm:mb-4">
               Welcome back, {user?.email || "User"}!
             </h2>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 text-base sm:text-lg">
               Create your next short link and track its performance
             </p>
           </div>
 
           {/* Link Creation Section */}
-          <div className="max-w-2xl mx-auto mb-12">
+          <div className="max-w-2xl mx-auto mb-8 sm:mb-12">
             <Card className="bg-white shadow-lg border-0">
-              <CardContent className="p-6">
+              <CardContent className="p-4 sm:p-6">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">
                   Create New Short Link
                 </h3>
@@ -171,7 +171,7 @@ const Home = () => {
                       </p>
                     </div>
                     
-                    <div className="flex gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3">
                       <Button
                         onClick={() => {
                           setCreatedLink(null);

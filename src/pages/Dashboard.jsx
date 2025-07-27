@@ -74,12 +74,12 @@ const Dashboard = () => {
         type={toast.type}
       />
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">ShortLink Dashboard</h1>
+      <div className="bg-white border-b border-gray-200 px-4 sm:px-6 py-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">ShortLink Dashboard</h1>
           <Button 
             variant="outline" 
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 w-full sm:w-auto"
             onClick={() => navigate("/")}
           >
             <Home size={16} />
@@ -89,22 +89,22 @@ const Dashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="p-6">
-        <div className="max-w-7xl mx-auto space-y-6">
+      <div className="p-4 sm:p-6">
+        <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6">
           {/* Welcome Message */}
-          <div className="bg-white rounded-lg p-6 border border-gray-200">
-            <div className="flex justify-between items-start">
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          <div className="bg-white rounded-lg p-4 sm:p-6 border border-gray-200">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+              <div className="flex-1">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
                   Welcome back, {user?.email || "User"}!
                 </h2>
-                <p className="text-gray-600">
+                <p className="text-gray-600 text-sm sm:text-base">
                   Here's an overview of your link performance and analytics.
                 </p>
               </div>
               <Button
                 onClick={() => navigate("/")}
-                className="bg-gradient-to-tr from-purple-500 to-purple-400 text-white"
+                className="bg-gradient-to-tr from-purple-500 to-purple-400 text-white w-full sm:w-auto"
               >
                 <Plus size={16} className="mr-2" />
                 Create New Link
@@ -308,25 +308,25 @@ const Dashboard = () => {
               ) : (
                 <div className="space-y-4">
                   {links.map((link) => (
-                    <div key={link.id} className="flex items-center justify-between p-4 border border-gray-100 rounded-lg">
-                      <div className="flex-1">
-                        <div className="font-medium text-gray-900 truncate">
+                    <div key={link.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border border-gray-100 rounded-lg gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-gray-900 truncate text-sm sm:text-base">
                           {link.original_url}
                         </div>
-                        <div className="text-sm text-purple-600">
+                        <div className="text-xs sm:text-sm text-purple-600 truncate">
                           {generateShortUrl(link.short_code)}
                         </div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <div className="text-right">
-                          <div className="font-medium text-gray-900">
+                      <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
+                        <div className="text-right flex-1 sm:flex-none">
+                          <div className="font-medium text-gray-900 text-sm sm:text-base">
                             {link.clicks.toLocaleString()} clicks
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-xs sm:text-sm text-gray-500">
                             {formatDate(link.created_at)}
                           </div>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-1 sm:gap-2">
                           <Button
                             variant="ghost"
                             size="sm"
