@@ -12,6 +12,9 @@ const Redirect = () => {
       try {
         setLoading(true);
         console.log('Redirect component: processing shortCode:', id);
+        console.log('Current URL:', window.location.href);
+        console.log('Environment check - Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Not set');
+        console.log('Environment check - Supabase Key:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Set' : 'Not set');
         
         // Track the click
         const linkData = await trackLinkClick(id);
