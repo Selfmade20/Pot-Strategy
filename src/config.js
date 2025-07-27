@@ -1,7 +1,7 @@
 // Configuration for the ShortLink application
 export const config = {
-  // Base URL for short links - change this for production
-  baseUrl: import.meta.env.VITE_BASE_URL || window.location.origin,
+  // Base URL for short links - always use current domain in production
+  baseUrl: window.location.origin,
   
   // App name
   appName: 'ShortLink',
