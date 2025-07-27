@@ -14,25 +14,33 @@ A modern, real-time URL shortening application built with React, Vite, and Supab
 
 ## Screenshots
 
-### 🏠 Homepage
-![Homepage](screenshots/homepage.png)
-*Clean, modern homepage with URL shortening form and feature highlights*
+### 🏠 Homepage & Navigation
+![Homepage Top Bar](screenshots/Homepage-topbar.png)
+*Clean navigation with logo and authentication*
 
-### 🔐 Authentication
-![Authentication](screenshots/auth.png)
-*Secure login and signup forms with password visibility toggles*
+![URL Shortening](screenshots/Url-short.png)
+*Main URL shortening functionality with modern form design*
 
-### 📊 Dashboard
-![Dashboard](screenshots/dashboard.png)
-*Comprehensive dashboard with real-time analytics, click tracking, and link management*
+![Homepage Features](screenshots/Homepage-bottom.png)
+*Feature highlights and call-to-action sections*
 
-### 📈 Analytics
-![Analytics](screenshots/analytics.png)
-*Beautiful line charts showing click trends and performance metrics*
+### 🔐 Authentication System
+![Login Form](screenshots/Login.png)
+*Secure login form with password visibility toggle*
 
-### 📱 Mobile Responsive
-![Mobile](screenshots/mobile.png)
-*Fully responsive design that works perfectly on all devices*
+![Signup Form](screenshots/Signup.png)
+*User registration with form validation*
+
+### 📊 Dashboard & Analytics
+![Dashboard Overview](screenshots/Dashboard.png)
+*Comprehensive dashboard with welcome message and link management*
+
+![Analytics Chart](screenshots/Chart%20Analysis.png)
+*Real-time analytics with beautiful line charts showing click trends*
+
+### 👤 User Experience
+![Logged-in Homepage](screenshots/Logged-home.png)
+*Personalized experience for authenticated users with direct link creation*
 
 ## Development Setup
 
