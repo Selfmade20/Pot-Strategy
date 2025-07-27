@@ -5,7 +5,7 @@ import { Button } from "../components/ui/button";
 import { Link, TrendingUp, Star, BarChart3, Home, Plus, ExternalLink, Copy, Trash2 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useRealtimeLinks } from "../hooks/useRealtimeLinks";
-import { deleteLink } from "../db/apiLinks";
+import { deleteLink, trackLinkClick } from "../db/apiLinks";
 import { generateShortUrl } from "../config";
 import Toast from "../components/Toast";
 
@@ -338,7 +338,20 @@ const Dashboard = () => {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => window.open(link.original_url, '_blank')}
+                            onClick={async () => {
+                              try {
+                                // Track the click first
+                                await trackLinkClick(link.short_code);
+                                // Then open the URL
+                                window.open(link.original_url, '_blank');
+                                // Refresh data to show updated click count
+                                refreshData();
+                              } catch (error) {
+                                console.error('Error tracking click:', error);
+                                // Still open the URL even if tracking fails
+                                window.open(link.original_url, '_blank');
+                              }
+                            }}
                             className="h-8 w-8 p-0"
                           >
                             <ExternalLink size={14} />
